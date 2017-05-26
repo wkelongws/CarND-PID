@@ -1,5 +1,5 @@
 # CarND-Controls-PID
-Self-Driving Car Engineer Nanodegree Program
+Self-Driving Car Engineer Nanodegree Program term 2 project 4 - PID controller
 
 ---
 
@@ -23,62 +23,23 @@ Self-Driving Car Engineer Nanodegree Program
 ## Basic Build Instructions
 
 1. Clone this repo.
-2. Make a build directory: `mkdir build && cd build`
-3. Compile: `cmake .. && make`
-4. Run it: `./pid`. 
+2. run `./clean.sh`
+2. run `./build.sh`
+2. run `./run.sh`
 
-## Editor Settings
+## PID coefficients
 
-We've purposefully kept editor configuration files out of this repo in order to
-keep it as simple and environment agnostic as possible. However, we recommend
-using the following settings:
+* The propotional coefficient contributes to compensate the CTE. The larger the propotional coefficient, the quicker the car will return to the lane center but more overshoots and unstability will also be introducted.
 
-* indent using spaces
-* set tab width to 2 spaces (keeps the matrices in source code aligned)
+* The integral coefficient contributes to compenstate the systematic bias for example a constant steering angle bias built in the vehicle. Since there are no systematic bias in this simulator, the integral coefficient is suppose to be close or equal to zero.
 
-## Code Style
+* The differential coefficient contributes to compenstate the overshots and stablize the vehicle.
 
-Please (do your best to) stick to [Google's C++ style guide](https://google.github.io/styleguide/cppguide.html).
+## PID coefficients searching by twiddle
 
-## Project Instructions and Rubric
+The throttle was set as a constant 0.5.
 
-Note: regardless of the changes you make, your project must be buildable using
-cmake and make!
+All the PID coefficients are selected based on the twiddle searching strategy (The twiddle strategy is coded in main.cpp, currently commented/disabled). During twiddling, each cylce runs 1000 time steps. The total accumulated squred cte error from time step 300 to time step 1000 was calcualted and compared to the best recorded error to determine whether the current coefficient setting is good or not and adjust the searching range accordingly. Eventally the seaching stopped when the sum of all three searching ranges is smaller than a small tolerance value. The selected three coefficents were: Kp = 0.183837, Ki = 0.000952203, Kd = 4.79995. Then Ki was manually set to zero since there is no systematic bias in this simulator.
 
-More information is only accessible by people who are already enrolled in Term 2
-of CarND. If you are enrolled, see [the project page](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/f1820894-8322-4bb3-81aa-b26b3c6dcbaf/lessons/e8235395-22dd-4b87-88e0-d108c5e5bbf4/concepts/6a4d8d42-6a04-4aa6-b284-1697c0fd6562)
-for instructions and the project rubric.
+The car runs decently with the three selected PID coefficients in the mac simulator with screen resolution = 640*480 and graphics quality = Fastest.
 
-## Hints!
-
-* You don't have to follow this directory structure, but if you do, your work
-  will span all of the .cpp files here. Keep an eye out for TODOs.
-
-## Call for IDE Profiles Pull Requests
-
-Help your fellow students!
-
-We decided to create Makefiles with cmake to keep this project as platform
-agnostic as possible. Similarly, we omitted IDE profiles in order to we ensure
-that students don't feel pressured to use one IDE or another.
-
-However! I'd love to help people get up and running with their IDEs of choice.
-If you've created a profile for an IDE that you think other students would
-appreciate, we'd love to have you add the requisite profile files and
-instructions to ide_profiles/. For example if you wanted to add a VS Code
-profile, you'd add:
-
-* /ide_profiles/vscode/.vscode
-* /ide_profiles/vscode/README.md
-
-The README should explain what the profile does, how to take advantage of it,
-and how to install it.
-
-Frankly, I've never been involved in a project with multiple IDE profiles
-before. I believe the best way to handle this would be to keep them out of the
-repo root to avoid clutter. My expectation is that most profiles will include
-instructions to copy files to a new location to get picked up by the IDE, but
-that's just a guess.
-
-One last note here: regardless of the IDE used, every submitted project must
-still be compilable with cmake and make./
